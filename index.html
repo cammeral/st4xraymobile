@@ -492,6 +492,14 @@
             -webkit-print-color-adjust: exact !important;
             print-color-adjust: exact !important;
             color-adjust: exact !important;
+                width: 100%;
+    max-width: 800px; /* حد أقصى للعرض */
+    margin: 0 auto;
+    position: relative;
+    box-sizing: border-box;
+    background: white !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
         }
         
         .certificate::before {
@@ -1613,52 +1621,79 @@ ${notes}
         });
         
         // حفظ الشهادة كصورة
-downloadCertBtn.addEventListener('click', () => {
+downloadCertBtn.addEventListener('click', async () => {
     downloadCertBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري التحميل...';
     
     const certificate = document.getElementById('certificate');
+    
+    // 1. حفظ الأنماط الأصلية
     const originalStyles = {
+        position: certificate.style.position,
         width: certificate.style.width,
         height: certificate.style.height,
-        padding: certificate.style.padding
+        margin: certificate.style.margin,
+        transform: certificate.style.transform
     };
     
-    // تعيين أبعاد ثابتة للشهادة عند الحفظ
-    const targetWidth = 800; // عرض ثابت للصورة المحفوظة
-    const targetHeight = 1120; // ارتفاع ثابت للصورة المحفوظة (نسبة 1:1.4)
+    // 2. تطبيق أنماط خاصة بالتصدير
+    certificate.style.position = 'absolute';
+    certificate.style.left = '0';
+    certificate.style.top = '0';
+    certificate.style.width = '794px'; // عرض A4 بالبكسل (210mm)
+    certificate.style.height = '1123px'; // ارتفاع A4 بالبكسل (297mm)
+    certificate.style.margin = '0';
+    certificate.style.transform = 'none';
     
-    certificate.style.width = `${targetWidth}px`;
-    certificate.style.height = `${targetHeight}px`;
-    certificate.style.padding = '40px';
+    // 3. إنشاء عنصر مؤقت لاحتواء الشهادة
+    const tempContainer = document.createElement('div');
+    tempContainer.style.position = 'fixed';
+    tempContainer.style.left = '0';
+    tempContainer.style.top = '0';
+    tempContainer.style.width = '794px';
+    tempContainer.style.height = '1123px';
+    tempContainer.style.visibility = 'hidden';
+    tempContainer.style.zIndex = '9999';
+    tempContainer.appendChild(certificate.cloneNode(true));
+    document.body.appendChild(tempContainer);
     
-    html2canvas(certificate, {
-        scale: 1,
-        width: targetWidth,
-        height: targetHeight,
-        logging: false,
-        useCORS: true,
-        allowTaint: true,
-        backgroundColor: null
-    }).then(canvas => {
-        // ضبط جودة الصورة النهائية
-        const finalCanvas = document.createElement('canvas');
-        finalCanvas.width = targetWidth;
-        finalCanvas.height = targetHeight;
-        const ctx = finalCanvas.getContext('2d');
-        ctx.drawImage(canvas, 0, 0, targetWidth, targetHeight);
+    try {
+        // 4. استخدام html2canvas مع الإعدادات المثلى
+        const canvas = await html2canvas(tempContainer.firstChild, {
+            scale: 2,
+            logging: false,
+            useCORS: true,
+            allowTaint: true,
+            backgroundColor: null,
+            scrollX: 0,
+            scrollY: 0,
+            windowWidth: 794,
+            windowHeight: 1123,
+            width: 794,
+            height: 1123
+        });
         
+        // 5. تحويل Canvas إلى صورة
+        const imgData = canvas.toDataURL('image/png', 1.0);
+        
+        // 6. إنشاء رابط التحميل
         const link = document.createElement('a');
         link.download = `شهادة_${studentName.replace(/\s+/g, '_')}.png`;
-        link.href = finalCanvas.toDataURL('image/png', 1.0);
+        link.href = imgData;
         link.click();
         
-        // استعادة الأنماط الأصلية
-        certificate.style.width = originalStyles.width;
-        certificate.style.height = originalStyles.height;
-        certificate.style.padding = originalStyles.padding;
-        
+    } catch (error) {
+        console.error('حدث خطأ أثناء إنشاء الشهادة:', error);
+        alert('حدث خطأ أثناء حفظ الشهادة، يرجى المحاولة مرة أخرى');
+    } finally {
+        // 7. التنظيف بعد الانتهاء
+        document.body.removeChild(tempContainer);
         downloadCertBtn.innerHTML = '<i class="fas fa-download"></i> حفظ الشهادة كصورة';
-    });
+        
+        // 8. استعادة الأنماط الأصلية (إن وجدت)
+        Object.keys(originalStyles).forEach(key => {
+            certificate.style[key] = originalStyles[key];
+        });
+    }
 });
         
         // إخفاء النتائج التفصيلية في البداية
