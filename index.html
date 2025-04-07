@@ -724,115 +724,74 @@
             to { top: 100%; }
         }
         
-        /* التكيف مع الشاشات الصغيرة */
-        @media (max-width: 768px) {
-            .welcome-screen h1 {
-                font-size: 2rem;
-            }
-            
-            .login-form {
-                padding: 20px;
-            }
-            
-            .quiz-header {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            
-            .timer {
-                margin-top: 10px;
-            }
-            
-            .actions-container {
-                flex-direction: column;
-                gap: 10px;
-            }
-            
-            .certificate {
-                padding: 20px;
-            }
-            
-            .certificate-title {
-                font-size: 1.8rem;
-            }
-            
-            .certificate-text {
-                font-size: 1.2rem;
-            }
-        }
-		@media (max-width: 480px) {
+@media (max-width: 768px) {
     .certificate {
-        padding: 20px 10px;
-        border-width: 10px;
-		        background-size: 50px 50px;
+        padding: 15px;
+        border-width: 8px;
+        width: 100%;
+        aspect-ratio: 1 / 1.4; /* نسبة الطول إلى العرض (أكثر توازناً) */
+        overflow: hidden;
+    }
+    
+    .certificate-content {
+        transform: scale(0.9);
+        transform-origin: top center;
     }
     
     .certificate-title {
-        font-size: 1.5rem;
-		line-height: 1.5;
+        font-size: 1.3rem;
+        margin-bottom: 5px;
     }
     
-	    .certificate-date {
-        margin-top: 15px;
-        font-size: 0.9rem;
-    }
-	    .signature-line {
-        margin: 20px 0 10px;
-    }
-}
     .certificate-subtitle {
-        font-size: 1rem;
+        font-size: 0.9rem;
+        margin-bottom: 15px;
     }
     
     .certificate-text {
-        font-size: 1rem;
-        margin: 15px 0;
+        font-size: 0.9rem;
+        margin: 10px 0;
+        line-height: 1.4;
     }
     
     .certificate-student {
-        font-size: 1.3rem;
-        padding: 0 5px;
+        font-size: 1.1rem;
+        margin: 10px 0;
     }
     
     .certificate-message {
-        font-size: 0.9rem;
-        margin: 15px 0;
-        padding: 10px;
+        font-size: 0.8rem;
+        margin: 10px 0;
+        padding: 8px;
+    }
+    
+    .certificate-date {
+        margin-top: 10px;
+        font-size: 0.8rem;
     }
     
     .certificate-signature {
-        flex-direction: column;
-        margin-top: 30px;
+        margin-top: 20px;
+        flex-direction: row;
+        flex-wrap: wrap;
     }
     
     .signature {
-        width: 100%;
-        margin-bottom: 20px;
+        width: 48%;
+        font-size: 0.7rem;
     }
     
     .certificate-logo {
-        width: 80px;
-        height: 80px;
-        font-size: 30px;
+        width: 60px;
+        height: 60px;
+        font-size: 25px;
+        margin-bottom: 10px;
     }
     
     .certificate-seal {
-        width: 60px;
-        height: 60px;
-        font-size: 10px;
-    }
-    
-    .certificate-container {
-        padding: 15px;
-    }
-    
-    .actions-container {
-        flex-direction: column;
-    }
-    
-    .btn {
-        width: 100%;
-        margin-bottom: 10px;
+        width: 40px;
+        height: 40px;
+        font-size: 8px;
     }
 }
     </style>
@@ -1659,48 +1618,46 @@ downloadCertBtn.addEventListener('click', () => {
     
     const certificate = document.getElementById('certificate');
     const originalStyles = {
-        boxShadow: certificate.style.boxShadow,
-        background: certificate.style.background,
         width: certificate.style.width,
-        height: certificate.style.height
+        height: certificate.style.height,
+        padding: certificate.style.padding
     };
     
-    // تعيين أبعاد مناسبة للهواتف
-    certificate.style.width = '100%';
-    certificate.style.height = 'auto';
-    certificate.style.boxShadow = '0 10px 30px rgba(0,0,0,0.2)';
-    certificate.style.background = 'linear-gradient(135deg, #f5f7fa, #ffffff)';
+    // تعيين أبعاد ثابتة للشهادة عند الحفظ
+    const targetWidth = 800; // عرض ثابت للصورة المحفوظة
+    const targetHeight = 1120; // ارتفاع ثابت للصورة المحفوظة (نسبة 1:1.4)
     
-    // حساب الارتفاع المتوقع بناءً على المحتوى
-    const contentHeight = certificate.scrollHeight;
+    certificate.style.width = `${targetWidth}px`;
+    certificate.style.height = `${targetHeight}px`;
+    certificate.style.padding = '40px';
     
     html2canvas(certificate, {
-        scale: 2,
+        scale: 1,
+        width: targetWidth,
+        height: targetHeight,
         logging: false,
         useCORS: true,
         allowTaint: true,
-        backgroundColor: null,
-        width: certificate.offsetWidth,
-        height: contentHeight,
-        windowWidth: certificate.scrollWidth,
-        windowHeight: contentHeight
+        backgroundColor: null
     }).then(canvas => {
+        // ضبط جودة الصورة النهائية
+        const finalCanvas = document.createElement('canvas');
+        finalCanvas.width = targetWidth;
+        finalCanvas.height = targetHeight;
+        const ctx = finalCanvas.getContext('2d');
+        ctx.drawImage(canvas, 0, 0, targetWidth, targetHeight);
+        
         const link = document.createElement('a');
         link.download = `شهادة_${studentName.replace(/\s+/g, '_')}.png`;
+        link.href = finalCanvas.toDataURL('image/png', 1.0);
+        link.click();
         
-        canvas.toBlob(function(blob) {
-            link.href = URL.createObjectURL(blob);
-            link.click();
-            URL.revokeObjectURL(link.href);
-            
-            // استعادة الأنماط الأصلية
-            certificate.style.boxShadow = originalStyles.boxShadow;
-            certificate.style.background = originalStyles.background;
-            certificate.style.width = originalStyles.width;
-            certificate.style.height = originalStyles.height;
-            
-            downloadCertBtn.innerHTML = '<i class="fas fa-download"></i> حفظ الشهادة كصورة';
-        }, 'image/png', 1);
+        // استعادة الأنماط الأصلية
+        certificate.style.width = originalStyles.width;
+        certificate.style.height = originalStyles.height;
+        certificate.style.padding = originalStyles.padding;
+        
+        downloadCertBtn.innerHTML = '<i class="fas fa-download"></i> حفظ الشهادة كصورة';
     });
 });
         
