@@ -1,0 +1,1711 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>معهد العهد للدراسات الإشعاعية - اختبارات</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap');
+        
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --light-color: #ecf0f1;
+            --dark-color: #2c3e50;
+            --success-color: #2ecc71;
+            --warning-color: #f39c12;
+            --science-blue: #2980b9;
+            --science-purple: #8e44ad;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Tajawal', sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: var(--dark-color);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* الصفحة الرئيسية */
+        .welcome-screen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, var(--science-blue), var(--science-purple));
+            color: white;
+            text-align: center;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .welcome-screen::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M0,0 L100,0 L100,100 L0,100 Z" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="2"/></svg>');
+            background-size: 30px 30px;
+            opacity: 0.3;
+        }
+        
+        .welcome-screen h1 {
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+            position: relative;
+            z-index: 1;
+            text-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        
+        .welcome-screen .logo {
+            width: 150px;
+            height: 150px;
+            background-color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            position: relative;
+            z-index: 1;
+        }
+        
+        .welcome-screen .logo i {
+            font-size: 70px;
+            color: var(--science-blue);
+        }
+        
+        .login-form {
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.2);
+            width: 100%;
+            max-width: 500px;
+            position: relative;
+            z-index: 1;
+            transform: translateY(20px);
+            animation: fadeInUp 0.8s ease-out forwards;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--primary-color);
+            font-weight: 500;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        
+        .form-group input:focus {
+            border-color: var(--secondary-color);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            transition: all 0.3s;
+            text-decoration: none;
+        }
+        
+        .btn:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .btn-block {
+            display: block;
+            width: 100%;
+        }
+        
+        /* شاشة الاختبار */
+        .quiz-container {
+            display: none;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.1);
+            padding: 30px;
+            margin-top: 30px;
+            position: relative;
+        }
+        
+        .quiz-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .quiz-title {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+        }
+        
+        .timer {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+        }
+        
+        .timer i {
+            margin-left: 5px;
+        }
+        
+        .timer.warning {
+            background-color: var(--warning-color);
+        }
+        
+        .timer.danger {
+            background-color: var(--accent-color);
+            animation: pulse 1s infinite;
+        }
+        
+        .question-container {
+            margin-bottom: 30px;
+            animation: fadeIn 0.5s ease-out;
+        }
+        
+        .question-image {
+            width: 100%;
+            max-height: 300px;
+            object-fit: contain;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+        
+        .question-image:hover {
+            transform: scale(1.02);
+        }
+        
+        .question-text {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            color: var(--dark-color);
+        }
+        
+        .options-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .option {
+            padding: 15px;
+            background-color: #f8f9fa;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+        }
+        
+        .option:hover {
+            background-color: #e9ecef;
+            border-color: var(--secondary-color);
+        }
+        
+        .option.selected {
+            background-color: var(--secondary-color);
+            color: white;
+            border-color: var(--secondary-color);
+        }
+        
+        .option input {
+            margin-left: 10px;
+        }
+        
+        .option-label {
+            flex-grow: 1;
+        }
+        
+        .navigation-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            gap: 15px;
+        }
+        
+        .navigation-buttons button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .btn-outline {
+            background-color: transparent;
+            border: 2px solid var(--secondary-color);
+            color: var(--secondary-color);
+        }
+        
+        .btn-outline:hover {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+        
+        /* قسم الملاحظات */
+        .notes-section {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            border: 1px solid #eee;
+        }
+        
+        .notes-section h3 {
+            margin-bottom: 15px;
+            color: var(--primary-color);
+        }
+        
+        .notes-section textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            min-height: 120px;
+            font-size: 16px;
+            transition: all 0.3s;
+            resize: vertical;
+        }
+        
+        .notes-section textarea:focus {
+            border-color: var(--secondary-color);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+        
+        .notes-hint {
+            font-size: 0.9rem;
+            color: #777;
+            margin-top: 10px;
+            text-align: right;
+        }
+        
+        #prevBtn {
+            background-color: #f8f9fa;
+            color: var(--primary-color);
+            border: 2px solid #ddd;
+        }
+        
+        #prevBtn:hover {
+            background-color: #e9ecef;
+            border-color: var(--secondary-color);
+        }
+        
+        #nextBtn, #submitBtn {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+        
+        #nextBtn:hover, #submitBtn:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        #prevBtn:disabled, #nextBtn:disabled, #submitBtn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        /* شاشة النتائج */
+        .results-container {
+            display: none;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.1);
+            padding: 30px;
+            margin-top: 30px;
+            text-align: center;
+        }
+        
+        .results-title {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+        }
+        
+        .score-container {
+            font-size: 1.5rem;
+            margin-bottom: 30px;
+        }
+        
+        .score {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--secondary-color);
+            margin: 10px 0;
+        }
+        
+        .success-message {
+            color: var(--success-color);
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+        }
+        
+        .failure-message {
+            color: var(--accent-color);
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+        }
+        
+        .actions-container {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .detailed-results {
+            margin-top: 40px;
+            text-align: right;
+            display: none;
+        }
+        
+        .result-item {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            align-items: center;
+        }
+        
+        .result-item.correct {
+            background-color: rgba(46, 204, 113, 0.1);
+        }
+        
+        .result-item.incorrect {
+            background-color: rgba(231, 76, 60, 0.1);
+        }
+        
+        .result-status {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-left: 15px;
+            flex-shrink: 0;
+        }
+        
+        .result-status.correct {
+            background-color: var(--success-color);
+            color: white;
+        }
+        
+        .result-status.incorrect {
+            background-color: var(--accent-color);
+            color: white;
+        }
+        
+        .result-question {
+            flex-grow: 1;
+        }
+        
+        .result-answer {
+            color: #777;
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+        
+        /* شهادة المشاركة */
+        .certificate-container {
+            display: none;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.1);
+            padding: 30px;
+            margin-top: 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .certificate {
+            background: linear-gradient(135deg, #f5f7fa, #ffffff);
+            border: 15px solid #f1c40f;
+            border-image: linear-gradient(45deg, #f1c40f, #e67e22) 1;
+            padding: 40px;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+            color-adjust: exact !important;
+        }
+        
+        .certificate::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><path d="M30,10 L70,10 L90,30 L90,70 L70,90 L30,90 L10,70 L10,30 Z" fill="none" stroke="rgba(52, 152, 219, 0.1)" stroke-width="2"/></svg>');
+            background-size: 100px 100px;
+            opacity: 0.3;
+            z-index: 0;
+        }
+        
+        .certificate-content {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .certificate-logo {
+            width: 120px;
+            height: 120px;
+            background-color: var(--science-blue);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            color: white;
+            font-size: 50px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .certificate-logo, .certificate-seal {
+            filter: drop-shadow(0 2px 5px rgba(0,0,0,0.3));
+        }
+
+        .certificate-title {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            font-weight: 700;
+            text-shadow: 0 2px 3px rgba(0,0,0,0.2);
+        }
+        
+        .certificate-subtitle {
+            font-size: 1.2rem;
+            color: #7f8c8d;
+            margin-bottom: 30px;
+        }
+        
+        .certificate-text {
+            font-size: 1.5rem;
+            margin: 30px 0;
+            line-height: 1.8;
+        }
+        
+        .certificate-student {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--science-blue) !important;
+            margin: 20px 0;
+            background: none !important;
+            -webkit-background-clip: initial !important;
+            background-clip: initial !important;
+            display: inline-block;
+            padding: 0 10px;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+        
+        .certificate-message {
+            font-size: 1.2rem;
+            margin: 30px 0;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: rgba(46, 204, 113, 0.1);
+        }
+        
+        .certificate-message.failure {
+            background-color: rgba(231, 76, 60, 0.1);
+        }
+        
+        .certificate-date {
+            margin-top: 30px;
+            color: #7f8c8d;
+        }
+        
+        .certificate-signature {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 50px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+        
+        .signature {
+            width: 45%;
+        }
+        
+        .signature-line {
+            height: 1px;
+            background-color: #bdc3c7;
+            margin: 40px 0 10px;
+            position: relative;
+        }
+        
+        .signature-line::after {
+            content: "";
+            position: absolute;
+            top: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 10px;
+            background-color: white;
+        }
+        
+        .certificate-seal {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            width: 80px;
+            height: 80px;
+            background-color: var(--accent-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+            transform: rotate(-15deg);
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+            opacity: 0.8;
+        }
+        
+        /* تأثيرات علمية */
+        .science-effects {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+        
+        .atom {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: 2px dashed rgba(52, 152, 219, 0.3);
+            animation: rotate 20s linear infinite;
+        }
+        
+        .electron {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: var(--secondary-color);
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 10px var(--secondary-color);
+        }
+        
+        .dna-strand {
+            position: absolute;
+            width: 2px;
+            height: 200px;
+            background-color: rgba(46, 204, 113, 0.2);
+            left: 20%;
+            top: -200px;
+            animation: fall 15s linear infinite;
+        }
+        
+        .dna-strand::before, .dna-strand::after {
+            content: "";
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: var(--success-color);
+        }
+        
+        .dna-strand::before {
+            top: 0;
+            left: -15px;
+        }
+        
+        .dna-strand::after {
+            top: 0;
+            right: -15px;
+        }
+        
+        /* الرسوم المتحركة */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes fadeInUp {
+            from { 
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to { 
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        @keyframes fall {
+            from { top: -200px; }
+            to { top: 100%; }
+        }
+        
+        /* التكيف مع الشاشات الصغيرة */
+        @media (max-width: 768px) {
+            .welcome-screen h1 {
+                font-size: 2rem;
+            }
+            
+            .login-form {
+                padding: 20px;
+            }
+            
+            .quiz-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .timer {
+                margin-top: 10px;
+            }
+            
+            .actions-container {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .certificate {
+                padding: 20px;
+            }
+            
+            .certificate-title {
+                font-size: 1.8rem;
+            }
+            
+            .certificate-text {
+                font-size: 1.2rem;
+            }
+        }
+		@media (max-width: 480px) {
+    .certificate {
+        padding: 20px 10px;
+        border-width: 10px;
+		        background-size: 50px 50px;
+    }
+    
+    .certificate-title {
+        font-size: 1.5rem;
+		line-height: 1.5;
+    }
+    
+	    .certificate-date {
+        margin-top: 15px;
+        font-size: 0.9rem;
+    }
+	    .signature-line {
+        margin: 20px 0 10px;
+    }
+}
+    .certificate-subtitle {
+        font-size: 1rem;
+    }
+    
+    .certificate-text {
+        font-size: 1rem;
+        margin: 15px 0;
+    }
+    
+    .certificate-student {
+        font-size: 1.3rem;
+        padding: 0 5px;
+    }
+    
+    .certificate-message {
+        font-size: 0.9rem;
+        margin: 15px 0;
+        padding: 10px;
+    }
+    
+    .certificate-signature {
+        flex-direction: column;
+        margin-top: 30px;
+    }
+    
+    .signature {
+        width: 100%;
+        margin-bottom: 20px;
+    }
+    
+    .certificate-logo {
+        width: 80px;
+        height: 80px;
+        font-size: 30px;
+    }
+    
+    .certificate-seal {
+        width: 60px;
+        height: 60px;
+        font-size: 10px;
+    }
+    
+    .certificate-container {
+        padding: 15px;
+    }
+    
+    .actions-container {
+        flex-direction: column;
+    }
+    
+    .btn {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+}
+    </style>
+</head>
+<body>
+    <!-- شاشة الترحيب -->
+    <div class="welcome-screen" id="welcomeScreen">
+        <div class="science-effects">
+            <div class="atom" style="top: 10%; left: 10%;">
+                <div class="electron" style="top: 0; left: 50px;"></div>
+            </div>
+            <div class="atom" style="top: 70%; left: 80%; animation-duration: 25s;">
+                <div class="electron" style="top: 0; left: 60px;"></div>
+            </div>
+            <div class="dna-strand" style="left: 30%; animation-delay: 2s;"></div>
+            <div class="dna-strand" style="left: 70%; animation-delay: 5s;"></div>
+        </div>
+        
+        <div class="logo">
+            <i class="fas fa-atom"></i>
+        </div>
+        
+        <h1>معهد العهد للدراسات الإشعاعية</h1>
+        
+        <div class="login-form">
+            <h2>نظام الاختبارات الإلكترونية</h2>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="studentName">اسم الطالب</label>
+                    <input type="text" id="studentName" required placeholder="أدخل اسمك الكامل">
+                </div>
+                <div class="form-group">
+                    <label for="collegeName">اسم الكلية</label>
+                    <input type="text" id="collegeName" required placeholder="أدخل اسم الكلية">
+                </div>
+                <button type="submit" class="btn btn-block">بدء الاختبار</button>
+            </form>
+        </div>
+    </div>
+    
+    <!-- شاشة الاختبار -->
+    <div class="container">
+        <div class="quiz-container" id="quizContainer">
+            <div class="quiz-header">
+                <h2 class="quiz-title">اختبار الدراسات الإشعاعية</h2>
+                <div class="timer" id="timer">
+                    <span id="time">03:00</span>
+                    <i class="fas fa-clock"></i>
+                </div>
+            </div>
+            
+            <!-- قسم الأسئلة -->
+            <div class="question-container" id="questionContainer">
+                <!-- سيتم عرض الأسئلة هنا ديناميكيًا -->
+            </div>
+            
+            <!-- قسم الملاحظات -->
+            <div class="notes-section" id="notesSection">
+                <h3>ملاحظاتك (اختياري)</h3>
+                <textarea id="studentNotes" placeholder="يمكنك كتابة أي ملاحظات أو أسئلة تريد توضيحها..."></textarea>
+                <p class="notes-hint">هذه الملاحظات لن تؤثر على تقييمك ولكنها قد تساعد في تحسين تجربتك</p>
+            </div>
+            
+            <!-- أزرار التنقل -->
+            <div class="navigation-buttons">
+                <button id="prevBtn"><i class="fas fa-arrow-right"></i> السابق</button>
+                <button id="nextBtn">التالي <i class="fas fa-arrow-left"></i></button>
+                <button id="submitBtn" style="display:none;"><i class="fas fa-paper-plane"></i> إرسال الإجابات</button>
+            </div>
+        </div>
+        
+        <!-- شاشة النتائج -->
+        <div class="results-container" id="resultsContainer">
+            <h2 class="results-title">نتيجة الاختبار</h2>
+            <div class="score-container">
+                <div>درجتك النهائية</div>
+                <div class="score" id="finalScore">0%</div>
+                <div id="resultMessage" class="success-message">تهانينا! لقد نجحت في الاختبار</div>
+            </div>
+            
+            <div class="actions-container">
+                <button class="btn" id="retakeBtn">
+                    <i class="fas fa-redo"></i> إعادة الاختبار
+                </button>
+                <button class="btn btn-outline" id="detailsBtn">
+                    <i class="fas fa-info-circle"></i> رؤية التفاصيل
+                </button>
+                <button class="btn" id="certificateBtn">
+                    <i class="fas fa-award"></i> الحصول على الشهادة
+                </button>
+            </div>
+            
+            <div class="detailed-results" id="detailedResults">
+                <h3>تفاصيل الإجابات</h3>
+                <!-- سيتم ملء النتائج التفصيلية هنا ديناميكيًا -->
+            </div>
+        </div>
+        
+        <!-- شهادة المشاركة -->
+        <div class="certificate-container" id="certificateContainer">
+            <div class="certificate" id="certificate">
+                <div class="certificate-seal">
+                    <span>معهد العهد</span>
+                </div>
+                
+                <div class="certificate-content">
+                    <div class="certificate-logo">
+                        <i class="fas fa-atom"></i>
+                    </div>
+                    
+                    <h1 class="certificate-title">شهادة مشاركة</h1>
+                    <h2 class="certificate-subtitle">معهد العهد للدراسات الإشعاعية</h2>
+                    
+                    <div class="certificate-text">
+                        تمنح هذه الشهادة إلى الطالب المتميز
+                    </div>
+                    
+                    <div class="certificate-student" id="certificateStudent">
+                        محمد علي - كلية الهادي
+                    </div>
+                    
+                    <div class="certificate-text">
+                        لمشاركته في اختبار الدراسات الإشعاعية الذي أقيم بتاريخ
+                    </div>
+                    
+                    <div class="certificate-date" id="certificateDate">
+                        1 يناير 2023
+                    </div>
+                    
+                    <div class="certificate-message" id="certificateMessage">
+                        وقد أظهر الطالب تفوقًا ملحوظًا في اجتياز هذا الاختبار بنجاح
+                    </div>
+                    
+                    <div class="certificate-signature">
+                        <div class="signature">
+                            <div class="signature-line"></div>
+                            <div>مدير المعهد عبد الستار عبد علي</div>
+                        </div>
+                        <div class="signature">
+                            <div class="signature-line"></div>
+                            <div>رئيس لجنة الاختبارات مرتضى البيضاني</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="actions-container" style="margin-top: 30px;">
+                <button class="btn" id="downloadCertBtn">
+                    <i class="fas fa-download"></i> حفظ الشهادة كصورة
+                </button>
+                <button class="btn btn-outline" id="backToResultsBtn">
+                    <i class="fas fa-arrow-left"></i> العودة للنتائج
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script>
+        // بيانات الاختبار
+        const questions = [
+            {
+                question: "Choose the correct answer",
+                image: "radioactive1.jpg",
+                options: ["Curvilinear", "Phased array", "Linear probe", "Linear ultrasound probe"],
+                correctAnswer: 1
+            },
+            {
+                question: "Choose the correct answer",
+                image: "radioactive2.jpg",
+                options: ["Curvilinear", "Phased array", "Linear probe", "Linear ultrasound probe"],
+                correctAnswer: 0
+            },
+            {
+                question: "Choose the correct answer",
+                image: "Acoustic enhancement.jpg",
+                options: ["Hepatic vein", "Portal vein", "Acoustic shadowing", "Acoustic enhancement"],
+                correctAnswer: 3
+            },
+            {
+                question: "Choose the correct answer",
+                image: "Acoustic shadowing.jpg",
+                options: ["Hepatic vein", "Portal vein", "Acoustic shadowing", "Acoustic enhancement"],
+                correctAnswer: 2
+            },
+            {
+                question: "Choose the correct answer",
+                image: "Hepatic vein.jpg",
+                options: ["Hepatic vein", "Portal vein", "Acoustic shadowing", "Acoustic enhancement"],
+                correctAnswer: 0
+            },
+            {
+                question: "Choose the correct answer",
+                image: "Portal vein.jpg",
+                options: ["Hepatic vein", "Portal vein", "Acoustic shadowing", "Acoustic enhancement"],
+                correctAnswer: 1
+            },
+            {
+                question: "Choose the correct answer",
+                image: "Multiple well defined hyper echoic lesions.jpg",
+                options: ["Multiple well defined hyper echoic lesions", "Old calcified hydatid cyst", "Gall bladder", "Gall bladder polyp"],
+                correctAnswer: 0
+            },
+            {
+                question: "Choose the correct answer",
+                image: "Gall bladder polyp.jpg",
+                options: ["Multiple well defined hyper echoic lesions", "Old calcified hydatid cyst", "Gall bladder", "Gall bladder polyp"],
+                correctAnswer: 3
+            },
+            {
+                question: "Choose the correct answer",
+                image: "Gall bladder.jpg",
+                options: ["Multiple well defined hyper echoic lesions", "Old calcified hydatid cyst", "Gall bladder", "Gall bladder polyp"],
+                correctAnswer: 2
+            },
+            {
+                question: "Choose the correct answer",
+                image: "Old calcified hydatid cyst.jpg",
+                options: ["Multiple well defined hyper echoic lesions", "Old calcified hydatid cyst", "Gall bladder", "Gall bladder polyp"],
+                correctAnswer: 1
+            },
+            {
+                question: "Choose the correct answer",
+                image: "Gall bladder sludge.jpg",
+                options: ["Impacted gall stone", "Acute calculus cholecystitis", "Gall bladder sludge", "renal angiomyolipoma"],
+                correctAnswer: 2
+            },
+            {
+                question: "Choose the correct answer",
+                image: "Acute calculus cholecystitis.jpg",
+                options: ["Impacted gall stone", "Acute calculus cholecystitis", "Gall bladder sludge", "renal angiomyolipoma"],
+                correctAnswer: 1
+            },
+            {
+                question: "Choose the correct answer",
+                image: "Impacted gall stone.jpg",
+                options: ["Impacted gall stone", "Acute calculus cholecystitis", "Gall bladder sludge", "renal angiomyolipoma"],
+                correctAnswer: 0
+            },
+            {
+                question: "Choose the correct answer",
+                image: "renal angiomyolipoma.jpg",
+                options: ["Impacted gall stone", "Acute calculus cholecystitis", "Gall bladder sludge", "renal angiomyolipoma"],
+                correctAnswer: 3
+            },
+            {
+                question: "Choose the correct answer",
+                image: "Single renal stone.jpg",
+                options: ["Simple renal cyst", "Single renal stone", "Solid renal tumor", "Renal hydronephrosis"],
+                correctAnswer: 1
+            },
+            {
+                question: "Choose the correct answer",
+                image: "Renal hydronephrosis.jpg",
+                options: ["Simple renal cyst", "Single renal stone", "Solid renal tumor", "Renal hydronephrosis"],
+                correctAnswer: 3
+            },
+            {
+                question: "Choose the correct answer",
+                image: "Solid renal tumor.jpg",
+                options: ["Simple renal cyst", "Single renal stone", "Solid renal tumor", "Renal hydronephrosis"],
+                correctAnswer: 2
+            },
+            {
+                question: "Choose the correct answer",
+                image: "Simple renal cyst.jpg",
+                options: ["Simple renal cyst", "Single renal stone", "Solid renal tumor", "Renal hydronephrosis"],
+                correctAnswer: 0
+            },
+            {
+                question: "Choose the correct answer",
+                image: "Subphrenic abscess.jpg",
+                options: ["Splenic lymphoma", "Splenic abscess", "Subphrenic abscess", "Renal failure ultrasonic sign"],
+                correctAnswer: 2
+            },
+            {
+                question: "Choose the correct answer",
+                image: "Renal failure ultrasonic sign.jpg",
+                options: ["Splenic lymphoma", "Splenic abscess", "Subphrenic abscess", "Renal failure ultrasonic sign"],
+                correctAnswer: 3
+            },
+            {
+                question: "Choose the correct answer",
+                image: "Splenic abscess.jpg",
+                options: ["Splenic lymphoma", "Splenic abscess", "Subphrenic abscess", "Renal failure ultrasonic sign"],
+                correctAnswer: 1
+            },
+            {
+                question: "Choose the correct answer",
+                image: "Splenic lymphoma.jpg",
+                options: ["Splenic lymphoma", "Splenic abscess", "Subphrenic abscess", "Renal failure ultrasonic sign"],
+                correctAnswer: 0
+            },
+            {
+                question: "Choose the correct answer",
+                image: "generalized wall thickening with diverticulum.jpg",
+                options: ["Acute pancreatitis", "uretrocele", "generalized wall thickening with diverticulum", "bladder wall polyp"],
+                correctAnswer: 2
+            },
+            {
+                question: "Choose the correct answer",
+                image: "Acute pancreatitis.jpg",
+                options: ["Acute pancreatitis", "uretrocele", "generalized wall thickening with diverticulum", "bladder wall polyp"],
+                correctAnswer: 0
+            },
+            {
+                question: "Choose the correct answer",
+                image: "uretrocele.jpg",
+                options: ["Acute pancreatitis", "uretrocele", "generalized wall thickening with diverticulum", "bladder wall polyp"],
+                correctAnswer: 1
+            },
+            {
+                question: "Choose the correct answer",
+                image: "bladder wall polyp.jpg",
+                options: ["Acute pancreatitis", "uretrocele", "generalized wall thickening with diverticulum", "bladder wall polyp"],
+                correctAnswer: 3
+            },
+            {
+                question: "Choose the correct answer",
+                image: "Spongiform thyroid nodule.jpg",
+                options: ["malignant urinary bladder mass", "thyroid cyst", "trachea", "Spongiform thyroid nodule"],
+                correctAnswer: 3
+            },
+            {
+                question: "Choose the correct answer",
+                image: "thyroid cyst.jpg",
+                options: ["malignant urinary bladder mass", "thyroid cyst", "trachea", "Spongiform thyroid nodule"],
+                correctAnswer: 1
+            },
+            {
+                question: "Choose the correct answer",
+                image: "malignant urinary bladder mass.jpg",
+                options: ["malignant urinary bladder mass", "thyroid cyst", "trachea", "Spongiform thyroid nodule"],
+                correctAnswer: 0
+            },
+            {
+                question: "Choose the correct answer",
+                image: "trachea.jpg",
+                options: ["malignant urinary bladder mass", "thyroid cyst", "trachea", "Spongiform thyroid nodule"],
+                correctAnswer: 2
+            },
+            {
+                question: "Choose the correct answer",
+                image: "Rim calcification.jpg",
+                options: ["thyroid nodule", "Rim calcification", "Rim hypoechoic halo", "Anteverted uterus"],
+                correctAnswer: 1
+            },
+            {
+                question: "Choose the correct answer",
+                image: "Rim hypoechoic halo.jpg",
+                options: ["thyroid nodule", "Rim calcification", "Rim hypoechoic halo", "Anteverted uterus"],
+                correctAnswer: 2
+            },
+            {
+                question: "Choose the correct answer",
+                image: "Spongiform thyroid nodule.jpg",
+                options: ["thyroid nodule", "Rim calcification", "Rim hypoechoic halo", "Anteverted uterus"],
+                correctAnswer: 0
+            },
+            {
+                question: "Choose the correct answer",
+                image: "Anteverted uterus.jpg",
+                options: ["thyroid nodule", "Rim calcification", "Rim hypoechoic halo", "Anteverted uterus"],
+                correctAnswer: 3
+            },
+            {
+                question: "Choose the correct answer",
+                image: "Endometrium carcinoma.jpg",
+                options: ["Retroverted uterus", "Uterine myoma", "Endometrium carcinoma", "Hydrosalpinx"],
+                correctAnswer: 2
+            },
+            {
+                question: "Choose the correct answer",
+                image: "Uterine myoma.jpg",
+                options: ["Retroverted uterus", "Uterine myoma", "Endometrium carcinoma", "Hydrosalpinx"],
+                correctAnswer: 1
+            },
+            {
+                question: "Choose the correct answer",
+                image: "Retroverted uterus.jpg",
+                options: ["Retroverted uterus", "Uterine myoma", "Endometrium carcinoma", "Hydrosalpinx"],
+                correctAnswer: 0
+            },
+            {
+                question: "Choose the correct answer",
+                image: "Hydrosalpinx.jpg",
+                options: ["Retroverted uterus", "Uterine myoma", "Endometrium carcinoma", "Hydrosalpinx"],
+                correctAnswer: 3
+            },
+            {
+                question: "Choose the correct answer",
+                image: "Pyosalpix.jpg",
+                options: ["Pyosalpix", "Simple follicular ovarian cyst", "Hemorrhagic cyst", "Biparietal diameter (BPD)"],
+                correctAnswer: 0
+            },
+            {
+                question: "Choose the correct answer",
+                image: "Simple follicular ovarian cyst.jpg",
+                options: ["Pyosalpix", "Simple follicular ovarian cyst", "Hemorrhagic cyst", "Biparietal diameter (BPD)"],
+                correctAnswer: 1
+            },
+            {
+                question: "Choose the correct answer",
+                image: "Hemorrhagic cyst.jpg",
+                options: ["Pyosalpix", "Simple follicular ovarian cyst", "Hemorrhagic cyst", "Biparietal diameter (BPD)"],
+                correctAnswer: 2
+            },
+            {
+                question: "Choose the correct answer",
+                image: "Bipdiameter.jpg",
+                options: ["Pyosalpix", "Simple follicular ovarian cyst", "Hemorrhagic cyst", "Biparietal diameter (BPD)"],
+                correctAnswer: 3
+            },
+            {
+                question: "Choose the correct answer",
+                image: "Femoral length.jpg",
+                options: ["Femoral length", "Incomplete abortion", "Cephalic index", "crown rump"],
+                correctAnswer: 0
+            },
+            {
+                question: "Choose the correct answer",
+                image: "Cephalic index.jpg",
+                options: ["Femoral length", "Incomplete abortion", "Cephalic index", "crown rump"],
+                correctAnswer: 2
+            },
+            {
+                question: "Choose the correct answer",
+                image: "Incomplete abortion.jpg",
+                options: ["Femoral length", "Incomplete abortion", "Cephalic index", "crown rump"],
+                correctAnswer: 1
+            },
+            {
+                question: "Choose the correct answer",
+                image: "crown rump.jpg",
+                options: ["Femoral length", "Incomplete abortion", "Cephalic index", "crown rump"],
+                correctAnswer: 3
+            },
+            {
+                question: "Choose the correct answer",
+                image: "Molar pregnancy.jpg",
+                options: ["First three months normal pregnancy", "9-10 weeks pregnancy", "6 weeks multiple pregnancy", "Molar pregnancy"],
+                correctAnswer: 3
+            },
+            {
+                question: "Choose the correct answer",
+                image: "9-10 weeks pregnancy.jpg",
+                options: ["First three months normal pregnancy", "9-10 weeks pregnancy", "6 weeks multiple pregnancy", "Molar pregnancy"],
+                correctAnswer: 1
+            },
+            {
+                question: "Choose the correct answer",
+                image: "6 weeks multiple pregnancy.jpg",
+                options: ["First three months normal pregnancy", "9-10 weeks pregnancy", "6 weeks multiple pregnancy", "Molar pregnancy"],
+                correctAnswer: 2
+            },
+            {
+                question: "Choose the correct answer",
+                image: "First three months normal pregnancy.jpg",
+                options: ["First three months normal pregnancy", "9-10 weeks pregnancy", "6 weeks multiple pregnancy", "Molar pregnancy"],
+                correctAnswer: 0
+            },
+            {
+                question: "Choose the correct answer",
+                image: "Hydrocele.jpg",
+                options: ["Blighted ovum", "biparietal diameter", "Hydrocele", "Testicular haematoma"],
+                correctAnswer: 2
+            },
+            {
+                question: "Choose the correct answer",
+                image: "biparietal diameter.jpg",
+                options: ["Blighted ovum", "biparietal diameter", "Hydrocele", "Testicular haematoma"],
+                correctAnswer: 1
+            },
+            {
+                question: "Choose the correct answer",
+                image: "Blighted ovum.jpg",
+                options: ["Blighted ovum", "biparietal diameter", "Hydrocele", "Testicular haematoma"],
+                correctAnswer: 0
+            },
+            {
+                question: "Choose the correct answer",
+                image: "Testicular haematoma.jpg",
+                options: ["Blighted ovum", "biparietal diameter", "Hydrocele", "Testicular haematoma"],
+                correctAnswer: 3
+            },
+            {
+                question: "Choose the correct answer",
+                image: "Epididymal cyst.jpg",
+                options: ["Testicular haematoma", "Epididymal cyst", "multiple pregnancy", "crown rump"],
+                correctAnswer: 1
+            }
+        ];
+        
+        // متغيرات التطبيق
+        let currentQuestion = 0;
+        let studentAnswers = Array(questions.length).fill(null);
+        let timer;
+        let timeLeft = 180; // 3 دقائق لكل سؤال (180 ثانية)
+        let studentName = "";
+        let collegeName = "";
+        
+        // عناصر DOM
+        const welcomeScreen = document.getElementById('welcomeScreen');
+        const quizContainer = document.getElementById('quizContainer');
+        const resultsContainer = document.getElementById('resultsContainer');
+        const certificateContainer = document.getElementById('certificateContainer');
+        const loginForm = document.getElementById('loginForm');
+        const questionContainer = document.getElementById('questionContainer');
+        const notesSection = document.getElementById('notesSection');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const submitBtn = document.getElementById('submitBtn');
+        const timerElement = document.getElementById('timer');
+        const timeDisplay = document.getElementById('time');
+        const finalScore = document.getElementById('finalScore');
+        const resultMessage = document.getElementById('resultMessage');
+        const detailedResults = document.getElementById('detailedResults');
+        const retakeBtn = document.getElementById('retakeBtn');
+        const detailsBtn = document.getElementById('detailsBtn');
+        const certificateBtn = document.getElementById('certificateBtn');
+        const certificateStudent = document.getElementById('certificateStudent');
+        const certificateDate = document.getElementById('certificateDate');
+        const certificateMessage = document.getElementById('certificateMessage');
+        const downloadCertBtn = document.getElementById('downloadCertBtn');
+        const backToResultsBtn = document.getElementById('backToResultsBtn');
+        const studentNotes = document.getElementById('studentNotes');
+        
+        // أحداث النموذج
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            studentName = document.getElementById('studentName').value.trim();
+            collegeName = document.getElementById('collegeName').value.trim();
+            
+            if (studentName && collegeName) {
+                welcomeScreen.style.display = 'none';
+                quizContainer.style.display = 'block';
+                loadQuestion(currentQuestion);
+                startTimer();
+            } else {
+                alert('الرجاء إدخال اسم الطالب واسم الكلية');
+            }
+        });
+        
+        // تحميل السؤال
+        function loadQuestion(index) {
+            const question = questions[index];
+            
+            let optionsHtml = '';
+            question.options.forEach((option, i) => {
+                const isSelected = studentAnswers[index] === i ? 'selected' : '';
+                optionsHtml += `
+                    <div class="option ${isSelected}" data-index="${i}">
+                        <input type="radio" name="answer" id="option${i}" ${studentAnswers[index] === i ? 'checked' : ''}>
+                        <label class="option-label" for="option${i}">${option}</label>
+                    </div>
+                `;
+            });
+            
+            questionContainer.innerHTML = `
+                <img src="${question.image}" alt="صورة السؤال" class="question-image">
+                <h3 class="question-text">${question.question}</h3>
+                <div class="options-container">
+                    ${optionsHtml}
+                </div>
+            `;
+            
+            // إضافة أحداث للنقر على الخيارات
+            document.querySelectorAll('.option').forEach(option => {
+                option.addEventListener('click', function() {
+                    document.querySelectorAll('.option').forEach(opt => {
+                        opt.classList.remove('selected');
+                    });
+                    
+                    this.classList.add('selected');
+                    const selectedIndex = parseInt(this.getAttribute('data-index'));
+                    studentAnswers[currentQuestion] = selectedIndex;
+                    
+                    checkAllQuestionsAnswered();
+                });
+            });
+            
+            // التحكم في عرض الأزرار
+            prevBtn.disabled = (index === 0);
+            
+            if (index === questions.length - 1) {
+                nextBtn.style.display = 'none';
+                submitBtn.style.display = 'block';
+            } else {
+                nextBtn.style.display = 'block';
+                submitBtn.style.display = 'none';
+            }
+            
+            checkAllQuestionsAnswered();
+            
+            // إعادة تعيين المؤقت
+            resetTimer();
+        }
+        
+        // التحقق من إجابة جميع الأسئلة
+        function checkAllQuestionsAnswered() {
+            const allAnswered = studentAnswers.every(answer => answer !== null);
+            submitBtn.disabled = !allAnswered;
+        }
+        
+        // المؤقت
+        function startTimer() {
+            clearInterval(timer);
+            updateTimerDisplay();
+            
+            timer = setInterval(() => {
+                timeLeft--;
+                updateTimerDisplay();
+                
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    if (currentQuestion < questions.length - 1) {
+                        currentQuestion++;
+                        loadQuestion(currentQuestion);
+                    } else {
+                        submitAnswers();
+                    }
+                }
+            }, 1000);
+        }
+        
+        function resetTimer() {
+            timeLeft = 180;
+            updateTimerDisplay();
+            timerElement.classList.remove('warning', 'danger');
+        }
+        
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            timeDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            
+            if (timeLeft <= 30) {
+                timerElement.classList.add('danger');
+            } else if (timeLeft <= 60) {
+                timerElement.classList.add('warning');
+            }
+        }
+        
+        // التنقل بين الأسئلة
+        nextBtn.addEventListener('click', () => {
+            if (currentQuestion < questions.length - 1) {
+                currentQuestion++;
+                loadQuestion(currentQuestion);
+            }
+        });
+        
+        prevBtn.addEventListener('click', () => {
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                loadQuestion(currentQuestion);
+            }
+        });
+        
+        // إرسال الإجابات
+        submitBtn.addEventListener('click', submitAnswers);
+        
+        function submitAnswers() {
+            const notes = studentNotes.value || 'لم يقدم الطالب أي ملاحظات';
+            
+            // حساب النتيجة
+            let correctAnswers = 0;
+            questions.forEach((question, index) => {
+                if (studentAnswers[index] === question.correctAnswer) {
+                    correctAnswers++;
+                }
+            });
+            
+            const score = Math.round((correctAnswers / questions.length) * 100);
+            finalScore.textContent = `${score}%`;
+            
+            // تحديد رسالة النتيجة
+            if (score >= 70) {
+                resultMessage.className = 'success-message';
+                resultMessage.textContent = 'تهانينا! لقد نجحت في الاختبار';
+            } else {
+                resultMessage.className = 'failure-message';
+                resultMessage.textContent = 'نأسف لم نجحت هذه المرة، نتمنى لك التوفيق في المرة القادمة';
+            }
+            
+            // إظهار النتائج التفصيلية
+            showDetailedResults(correctAnswers);
+            
+            // إخفاء اختبار وإظهار النتائج
+            quizContainer.style.display = 'none';
+            resultsContainer.style.display = 'block';
+            
+            // إرسال النتائج إلى التليجرام
+            sendToTelegram(score, notes);
+        }
+        
+        // عرض النتائج التفصيلية
+        function showDetailedResults(correctCount) {
+            let resultsHtml = '';
+            
+            questions.forEach((question, index) => {
+                const isCorrect = studentAnswers[index] === question.correctAnswer;
+                const correctClass = isCorrect ? 'correct' : 'incorrect';
+                const statusClass = isCorrect ? 'correct' : 'incorrect';
+                const statusIcon = isCorrect ? '✓' : '✗';
+                
+                resultsHtml += `
+                    <div class="result-item ${correctClass}">
+                        <div class="result-status ${statusClass}">${statusIcon}</div>
+                        <div class="result-question">
+                            <div>${question.question}</div>
+                            <div class="result-answer">
+                                إجابتك: ${question.options[studentAnswers[index]] || 'لم يتم الإجابة'} <br>
+                                الإجابة الصحيحة: ${question.options[question.correctAnswer]}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            detailedResults.innerHTML = resultsHtml;
+        }
+        
+        // إرسال النتائج إلى التليجرام
+        const botToken = '7390077316:AAHNEtFesiXM7h6Wp4BmrAr7DluySaa79t4';
+        const chatId = '6670082375';
+        
+        function sendToTelegram(score, notes) {
+            let message = `
+*نتيجة اختبار جديدة - معهد العهد*
+────────────────────
+👤 *الطالب:* ${studentName}
+🏫 *الكلية:* ${collegeName}
+📊 *النتيجة:* ${score}%
+────────────────────
+📝 *الملاحظات:*
+${notes}
+────────────────────
+`;
+
+            const totalQuestions = questions.length;
+            const correctAnswers = questions.reduce((acc, q, i) => 
+                acc + (studentAnswers[i] === q.correctAnswer ? 1 : 0), 0);
+            
+            message += `\n*الإحصائيات:*\n✅ ${correctAnswers} إجابة صحيحة\n❌ ${totalQuestions - correctAnswers} إجابة خاطئة`;
+
+            fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    chat_id: chatId,
+                    text: message,
+                    parse_mode: 'Markdown',
+                    disable_web_page_preview: true
+                })
+            })
+            .then(response => response.json())
+            .then(data => console.log('تم الإرسال:', data))
+            .catch(error => console.error('خطأ في الإرسال:', error));
+        }
+        
+        // أحداث شاشة النتائج
+        retakeBtn.addEventListener('click', () => {
+            // إعادة تعيين كل شيء
+            currentQuestion = 0;
+            studentAnswers = Array(questions.length).fill(null);
+            timeLeft = 180;
+            
+            // إخفاء النتائج وإظهار الاختبار
+            resultsContainer.style.display = 'none';
+            certificateContainer.style.display = 'none';
+            quizContainer.style.display = 'block';
+            
+            // تحميل السؤال الأول
+            loadQuestion(currentQuestion);
+            startTimer();
+            
+            // إعادة تعيين الملاحظات
+            studentNotes.value = '';
+        });
+        
+        detailsBtn.addEventListener('click', () => {
+            detailedResults.style.display = detailedResults.style.display === 'none' ? 'block' : 'none';
+            detailsBtn.innerHTML = detailedResults.style.display === 'none' ? 
+                '<i class="fas fa-info-circle"></i> رؤية التفاصيل' : 
+                '<i class="fas fa-eye-slash"></i> إخفاء التفاصيل';
+        });
+        
+        certificateBtn.addEventListener('click', () => {
+            resultsContainer.style.display = 'none';
+            certificateContainer.style.display = 'block';
+            
+            // ملء بيانات الشهادة
+            const today = new Date();
+            const dateStr = today.toLocaleDateString('ar-EG', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+            
+            certificateStudent.textContent = `${studentName} - ${collegeName}`;
+            certificateDate.textContent = dateStr;
+            
+            const score = parseInt(finalScore.textContent);
+            if (score >= 70) {
+                certificateMessage.className = 'certificate-message';
+                certificateMessage.textContent = 'وقد أظهر الطالب تفوقًا ملحوظًا في اجتياز هذا الاختبار بنجاح، مما يدل على فهمه العميق للمفاهيم الإشعاعية وقدرته على تطبيقها بشكل ممتاز.';
+            } else {
+                certificateMessage.className = 'certificate-message failure';
+                certificateMessage.textContent = 'وقد أظهر الطالب مشاركة فاعلة في الاختبار، ونحن نؤمن بأنه مع المزيد من الجهد والمثابرة سيكون قادرًا على تحقيق نتائج ممتازة في المستقبل.';
+            }
+        });
+        
+        backToResultsBtn.addEventListener('click', () => {
+            certificateContainer.style.display = 'none';
+            resultsContainer.style.display = 'block';
+        });
+        
+        // حفظ الشهادة كصورة
+downloadCertBtn.addEventListener('click', () => {
+    downloadCertBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري التحميل...';
+    
+    const certificate = document.getElementById('certificate');
+    const originalStyles = {
+        boxShadow: certificate.style.boxShadow,
+        background: certificate.style.background,
+        width: certificate.style.width,
+        height: certificate.style.height
+    };
+    
+    // تعيين أبعاد مناسبة للهواتف
+    certificate.style.width = '100%';
+    certificate.style.height = 'auto';
+    certificate.style.boxShadow = '0 10px 30px rgba(0,0,0,0.2)';
+    certificate.style.background = 'linear-gradient(135deg, #f5f7fa, #ffffff)';
+    
+    // حساب الارتفاع المتوقع بناءً على المحتوى
+    const contentHeight = certificate.scrollHeight;
+    
+    html2canvas(certificate, {
+        scale: 2,
+        logging: false,
+        useCORS: true,
+        allowTaint: true,
+        backgroundColor: null,
+        width: certificate.offsetWidth,
+        height: contentHeight,
+        windowWidth: certificate.scrollWidth,
+        windowHeight: contentHeight
+    }).then(canvas => {
+        const link = document.createElement('a');
+        link.download = `شهادة_${studentName.replace(/\s+/g, '_')}.png`;
+        
+        canvas.toBlob(function(blob) {
+            link.href = URL.createObjectURL(blob);
+            link.click();
+            URL.revokeObjectURL(link.href);
+            
+            // استعادة الأنماط الأصلية
+            certificate.style.boxShadow = originalStyles.boxShadow;
+            certificate.style.background = originalStyles.background;
+            certificate.style.width = originalStyles.width;
+            certificate.style.height = originalStyles.height;
+            
+            downloadCertBtn.innerHTML = '<i class="fas fa-download"></i> حفظ الشهادة كصورة';
+        }, 'image/png', 1);
+    });
+});
+        
+        // إخفاء النتائج التفصيلية في البداية
+        detailedResults.style.display = 'none';
+    </script>
+</body>
+</html>
